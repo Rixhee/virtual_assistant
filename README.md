@@ -1,7 +1,7 @@
 # Introduction 
 
 <h3> 
-    This is my final project for Harvard CS50x course. I have tried to create Jarvis and whoever has seen the movie Iron Man would know what I am talking about. The ones who haven't seen it, Jarvis is basically a virtual assistant like Siri and Alexa. I created this project using the programming language Python. 
+    This is my final project for Harvard CS50x course. I have tried to create Jarvis, who is basically iron man's virtual assistant(like Siri and Alexa). I created this project using the programming language Python. 
 <h3> 
 <br> 
 
