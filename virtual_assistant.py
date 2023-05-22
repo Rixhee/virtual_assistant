@@ -3,42 +3,46 @@ import datetime
 import speech_recognition as sr
 import random
 import wikipedia
-import os
 import keyboard
 import webbrowser
-import time
 
 engine = pyttsx3.init()
-voices = engine.getProperty('voices')
 
+# setting up the voice of the virtual assistant
+voices = engine.getProperty('voices')
 engine.setProperty('voice', voices[14].id)
 engine.setProperty('rate', 170)
-pyttsx3.voice.Voice(id, name= "Jarvis", gender="male", age=25)
 
+# edit the path accordingly
 chrome_path = 'open -a /Applications/Google\ Chrome.app %s'
 
-greet_lst = ["hello", "hey", "hi", "hi there", "hey there", "hey man", "hey buddy", "howdy"]
-greet_lst_two = ["how are you", "how are things going", "how's it going", "what's going on", "how have you been", "what's up", "what's new", "what's shaking"]
+greet_lst = ["hello", "hey", "hi", "hey there", "hey buddy", "howdy"]
+greet_lst_two = ["how are you", "how are things going", "how have you been", "what's up", "what's new", "what's shaking"]
 
 def speak(audio):
+    '''function through which the virtual assistant will speak its response'''
+
     engine.say(audio)
     engine.runAndWait()
 
 def wishMe():
-    hour = int(datetime.datetime.now().hour)
+    '''to greet the user according to the time'''
+
+    hour = datetime.datetime.now().hour
     if 4 <= hour < 12:
         speak("Good morning sir")
     
     elif 12 <= hour < 18:
         speak("Good afternoon sir")
     
-    elif 18 <= hour or hour < 4:
+    else:
         speak("Good evening sir ")
         
     speak("How may i help you")
 
 def takeCommand():
-    
+    '''To listen to the query'''
+
     r = sr.Recognizer() 
     
     with sr.Microphone() as source:
@@ -63,8 +67,8 @@ def takeCommand():
     return query
 
 def wikipedia_search(query):
-    
-    lst = ["what is the meaning of ", "what is ", "who is ", "meaning of "]
+
+    lst = ["what is the mean    ing of ", "what is ", "who is ", "meaning of "]
     
     for i in lst:
         if i in query:
@@ -83,18 +87,9 @@ def getDate():
 def getTime():
     
     now = datetime.datetime.now()
-    time = str(now.strftime("%H %M"))
+    time = now.strftime("%I:%M %p")
     
-    if int(time[:2]) == 00:
-        time = "12" + time[2:] + "am"
-    elif int(time[:2]) < 12:
-        time = time + "am"
-    elif int(time[:2]) == 12:
-        time = time + "pm"
-    elif int(time[:2]) > 12:
-        time = str(int(time[:2]) % 12) + str(time[2:]) + "pm"
-    
-    return  "It is " + time
+    return "It is " + time
 
 def open_in_web():
     lst = query.split()
@@ -115,9 +110,9 @@ def hey_reply():
     return string
 
 def how_are_you_reply():
-    lst = ["i am doing fine. ", "everyone is good. ", "things are going great. ", "everything is awesome. ", "things are okay. ", "i am fine. ", "not bad. ", "good. thanks. "]
-    lst_two = ["And you?", "How are you?", "How about yourself?"]
-    return lst[random.randrange(0, len(lst))] + lst_two[random.randrange(0, len(lst_two))]
+    lst = ["i am doing fine. ", "everyone is good. ", "things are going great. ", "everything is awesome. ", "good. thanks. "]
+    lst_two = ["And you?", "How about yourself?"]
+    return random.choice(lst) + random.choice(lst_two)
 
 def youtube_search():
     word_lst = ["open", "play", "search"]
@@ -133,12 +128,12 @@ def youtube_search():
     return f"{word}ing {string} on youtube" 
 
 def wishGoodnight():
-    lst = ["sweet dreams sir", "sleep well sir", "good night sir", "see you tomorrow sir"]
-    return lst[random.randrange(0, len(lst))]    
+    lst = ["sweet dreams sir", "good night sir", "see you tomorrow sir"]
+    return random.choice(lst)    
 
 def Goodbye():
-    lst = ["see you later", "take care", "have a good one", "see ya", "catch you later", "great to see you sir", "ciao", "cheerio", "goodbye sir"]
-    return lst[random.randrange(0, len(lst))]
+    lst = ["see you later", "take care", "have a good one", "great to see you sir", "goodbye sir"]
+    return random.choice(lst)
 
 if __name__ == "__main__":
     
@@ -153,12 +148,12 @@ if __name__ == "__main__":
             speak("Could you please repeat that")
             continue
 
-        if ("search" in query or "open" in query or "play" in query or "find" in query) and ("on youtube" in query or "in youtube" in query  or "at youtube" in query):
+        if "on youtube" in query or "in youtube" in query:
             response += youtube_search()
             speak(response)
             continue
         
-        if ("search" in query or "find" in query) and ("on google" in query or "in google" in query):
+        if "on google" in query or "in google" in query:
             response += search_on_google()
             speak(response)
             continue
@@ -170,23 +165,12 @@ if __name__ == "__main__":
             webbrowser.get(chrome_path).open("https://www.google.com/search?q=" + string)
             speak(f"Searching {string} on google")
 
-        if ("hello " in query or "hi " in query or "hey " in query) and ("how are you" in query or "what's up" in query):
+        if "how are you" in query or "what's up" in query:
             response += how_are_you_reply()
-
-        else:
-            for a in greet_lst_two:
-                if a in query:
-                    response += how_are_you_reply()
-        
-            for i in greet_lst:
-                if i in query:
-                    response += hey_reply()
 
         if "date" in query:
             get_date = getDate()
             response = response + " Today is " + get_date
-            if "who is " in query or "meaning of " in query:
-                response += ". and According to wikipedia " + wikipedia_search(query)
         
         elif "the time" in query:
             response += getTime()
@@ -250,7 +234,7 @@ if __name__ == "__main__":
                 webbrowser.get(chrome_path).open("https://www.wikipedia.com")
                 continue
 
-        elif ("open" in query) and ("on chrome" in query or "on google" in query or "in chrome" in query):
+        elif "on chrome" in query or "on google" in query or "in chrome" in query:
             response += open_in_web()
 
         if "bye" in query:
